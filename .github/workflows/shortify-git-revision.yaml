@@ -1,0 +1,65 @@
+name: Shortify git revision testing
+on: [push]
+jobs:
+  shortify-git-revision-on-os:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-latest, ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    concurrency:
+      group: shortify-git-revision-on-os-${{ github.ref }}
+      cancel-in-progress: true
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      # Test 1
+      - name: Shortify an existing git revision
+        uses: ./
+        with:
+          name: ROOT_COMMIT
+          revision: 88428f56bd9d2751c47106bedfd148162dfa50b8
+      - name: Test result 1
+        run: |
+          [[ "${{ env.ROOT_COMMIT }}" == "88428f56bd9d2751c47106bedfd148162dfa50b8" ]]
+          [[ "${{ env.ROOT_COMMIT_SHORT }}" == "88428f5" ]]
+        shell: bash
+
+      # Test 2
+      - name: Shortify an existing git revision from an env variable
+        uses: ./
+        with:
+          name: ENV_VAR_COMMIT
+        env:
+          ENV_VAR_COMMIT: 88428f56bd9d2751c47106bedfd148162dfa50b8
+      - name: Test result 1
+        run: |
+          [[ "${{ env.ENV_VAR_COMMIT }}" == "88428f56bd9d2751c47106bedfd148162dfa50b8" ]]
+          [[ "${{ env.ENV_VAR_COMMIT_SHORT }}" == "88428f5" ]]
+        shell: bash
+
+      # Test 3
+      - name: Shortify a missing git revision
+        uses: ./
+        with:
+          name: MISSING_REVISION
+          revision: ""
+      - name: Test result 3
+        run: |
+          [[ -z "${{ env.MISSING_REVISION }}" ]]
+          [[ -z "${{ env.MISSING_REVISION_SHORT }}" ]]
+        shell: bash
+
+  shortify-git-revision-release:
+    runs-on: ubuntu-latest
+    concurrency:
+      group: shortify-git-revision-release-${{ github.ref }}
+    needs: shortify-git-revision-on-os
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      # Release
+      - name: Release this GitHub Action
+        uses: rlespinasse/release-that@v1.x
