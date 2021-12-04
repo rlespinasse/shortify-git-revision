@@ -12,7 +12,6 @@ Produce short revision environment variable based on the input one.
   - uses: rlespinasse/shortify-git-revision@v1.x
     with:
       name: GITHUB_SHA
-      revision: value_to_slugify
   ```
 
   Will make available
