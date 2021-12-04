@@ -1,0 +1,21 @@
+name: "Shortify Git Revision"
+description: "Github Action to shortify a git revision"
+author: "Romain Lespinasse"
+inputs:
+  name:
+    description: "Environment variable that will hold the value and serve as prefix to shortify value"
+    required: true
+  revision:
+    description: "Revision to short"
+    required: false
+branding:
+  icon: "crop"
+  color: "gray-dark"
+runs:
+  using: "composite"
+  steps:
+    - run: $GITHUB_ACTION_PATH/shortify.sh
+      shell: bash
+      env:
+        INPUT_NAME: ${{ inputs.name }}
+        INPUT_REVISION: ${{ inputs.revision }}
