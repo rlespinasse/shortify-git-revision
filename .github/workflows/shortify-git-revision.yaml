@@ -20,7 +20,7 @@ jobs:
         with:
           name: ROOT_COMMIT
           revision: 88428f56bd9d2751c47106bedfd148162dfa50b8
-      - name: Test result 1
+      - name: Validate // Shortify an existing git revision
         run: |
           [[ "${{ env.ROOT_COMMIT }}" == "88428f56bd9d2751c47106bedfd148162dfa50b8" ]]
           [[ "${{ env.ROOT_COMMIT_SHORT }}" == "88428f5" ]]
@@ -33,7 +33,7 @@ jobs:
           name: ENV_VAR_COMMIT
         env:
           ENV_VAR_COMMIT: 88428f56bd9d2751c47106bedfd148162dfa50b8
-      - name: Test result 1
+      - name: Validate // Shortify an existing git revision from an env variable
         run: |
           [[ "${{ env.ENV_VAR_COMMIT }}" == "88428f56bd9d2751c47106bedfd148162dfa50b8" ]]
           [[ "${{ env.ENV_VAR_COMMIT_SHORT }}" == "88428f5" ]]
@@ -45,10 +45,39 @@ jobs:
         with:
           name: MISSING_REVISION
           revision: ""
-      - name: Test result 3
+      - name: Validate // Shortify a missing git revision
         run: |
           [[ -z "${{ env.MISSING_REVISION }}" ]]
           [[ -z "${{ env.MISSING_REVISION_SHORT }}" ]]
+        shell: bash
+
+      # Test 4
+      - id: test-shortify-wrong-git-revision
+        name: Shortify a wrong git revision
+        uses: ./
+        with:
+          name: WRONG_REVISION
+          revision: wrongwrongwrongwrongwrongwrongwrongwrong
+        continue-on-error: true
+      - name: Validate // Shortify a wrong git revision
+        run: |
+          [[ -z "${{ env.WRONG_REVISION }}" ]]
+          [[ -z "${{ env.WRONG_REVISION_SHORT }}" ]]
+          [[ "${{ steps.test-shortify-wrong-git-revision.outcome }}" == "failure" ]]
+          [[ "${{ steps.test-shortify-wrong-git-revision.conclusion }}" == "success" ]]
+        shell: bash
+
+      # Test 5
+      - name: Shortify a wrong git revision without failing
+        uses: ./
+        with:
+          name: WRONG_AND_MISSING_REVISION
+          revision: wrongwrongwrongwrongwrongwrongwrongwrong
+          continue-on-error: true
+      - name: Validate // Shortify a wrong git revision without failing
+        run: |
+          [[ -z "${{ env.WRONG_AND_MISSING_REVISION }}" ]]
+          [[ -z "${{ env.WRONG_AND_MISSING_REVISION_SHORT }}" ]]
         shell: bash
 
   shortify-git-revision-release:
