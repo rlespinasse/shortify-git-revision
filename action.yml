@@ -8,6 +8,10 @@ inputs:
   revision:
     description: "Revision to short"
     required: false
+  continue-on-error:
+    description: "Don't fail the action if the git revision isn't valid"
+    default: "false"
+    required: false
 branding:
   icon: "crop"
   color: "gray-dark"
@@ -19,3 +23,4 @@ runs:
       env:
         INPUT_NAME: ${{ inputs.name }}
         INPUT_REVISION: ${{ inputs.revision }}
+        INPUT_CONTINUE_ON_ERROR: ${{ inputs.continue-on-error }}

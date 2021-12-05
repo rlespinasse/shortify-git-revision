@@ -13,9 +13,12 @@ if [ -z "$REVISION" ]; then
   exit 0
 fi
 
-if [ "$(git cat-file -e "$REVISION")" == "" ]; then
+if [ "$(git cat-file -e "$REVISION" 2>&1)" == "" ]; then
   {
     echo "${NAME}=${REVISION}"
     echo "${NAME}_SHORT=$(git rev-parse --short "$REVISION")"
   } >>"$GITHUB_ENV"
+elif [ "${INPUT_CONTINUE_ON_ERROR}" == "false" ]; then
+  echo "::error ::Invalid revision: $REVISION from $NAME"
+  exit 1
 fi
