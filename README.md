@@ -21,6 +21,20 @@ If a revision is a bad revision, this action will produce an error message and f
 
   - `GITHUB_SHA_SHORT`
 
+- Shortify an environment variable with prefix
+
+  ```yaml
+  - uses: rlespinasse/shortify-git-revision@v1.x
+    with:
+      name: GITHUB_SHA
+      prefix: CI_
+  ```
+
+  Will make available
+
+  - `CI_GITHUB_SHA`
+  - `CI_GITHUB_SHA_SHORT`
+
 - Shortify any revision
 
   ```yaml
@@ -53,3 +67,9 @@ This input is _Optional_.
 If the input is set to `true`, this action will not fail on a bad revision
 
 The default value is `false`.
+
+### `prefix`
+
+The value will be prepend to each generated variable.
+
+This input is _Optional_.

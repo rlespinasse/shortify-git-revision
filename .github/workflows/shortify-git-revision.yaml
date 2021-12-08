@@ -27,6 +27,19 @@ jobs:
         shell: bash
 
       # Test 2
+      - name: Shortify an existing git revision with prefix
+        uses: ./
+        with:
+          name: ROOT_COMMIT
+          revision: 88428f56bd9d2751c47106bedfd148162dfa50b8
+          prefix: CI_
+      - name: Validate // Shortify an existing git revision with prefix
+        run: |
+          [[ "${{ env.ROOT_COMMIT }}" == "${{ env.CI_ROOT_COMMIT }}" ]]
+          [[ "${{ env.ROOT_COMMIT_SHORT }}" == "${{ env.CI_ROOT_COMMIT_SHORT }}" ]]
+        shell: bash
+
+      # Test 3
       - name: Shortify an existing git revision from an env variable
         uses: ./
         with:
@@ -39,7 +52,7 @@ jobs:
           [[ "${{ env.ENV_VAR_COMMIT_SHORT }}" == "88428f5" ]]
         shell: bash
 
-      # Test 3
+      # Test 4
       - name: Shortify a missing git revision
         uses: ./
         with:
@@ -51,7 +64,7 @@ jobs:
           [[ -z "${{ env.MISSING_REVISION_SHORT }}" ]]
         shell: bash
 
-      # Test 4
+      # Test 5
       - id: test-shortify-wrong-git-revision
         name: Shortify a wrong git revision
         uses: ./
@@ -67,7 +80,7 @@ jobs:
           [[ "${{ steps.test-shortify-wrong-git-revision.conclusion }}" == "success" ]]
         shell: bash
 
-      # Test 5
+      # Test 6
       - name: Shortify a wrong git revision without failing
         uses: ./
         with:
