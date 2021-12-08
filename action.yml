@@ -12,6 +12,10 @@ inputs:
     description: "Don't fail the action if the git revision isn't valid"
     default: "false"
     required: false
+  prefix:
+    description: "Value to prepend to each generated variable"
+    default: ""
+    required: false
 branding:
   icon: "crop"
   color: "gray-dark"
@@ -24,3 +28,4 @@ runs:
         INPUT_NAME: ${{ inputs.name }}
         INPUT_REVISION: ${{ inputs.revision }}
         INPUT_CONTINUE_ON_ERROR: ${{ inputs.continue-on-error }}
+        INPUT_PREFIX: ${{ inputs.prefix }}
