@@ -11,6 +11,18 @@ else
 fi
 REVISION=${INPUT_REVISION:-${!NAME}}
 
+SHORT_LENGTH=""
+if [ "$INPUT_LENGTH" != "" ]; then
+  if [ "$INPUT_LENGTH" -eq "$INPUT_LENGTH" ] 2>/dev/null; then
+    SHORT_LENGTH="=${INPUT_LENGTH}"
+  elif [ "${INPUT_CONTINUE_ON_ERROR}" == "false" ]; then
+    echo "::error ::Invalid length: $INPUT_LENGTH, should be a number"
+    exit 1
+  else
+    echo "::warning ::Invalid length: $INPUT_LENGTH, the default length will be used."
+  fi
+fi
+
 if [ -z "$REVISION" ]; then
   exit 0
 fi
@@ -18,7 +30,7 @@ fi
 if [ "$(git cat-file -e "$REVISION" 2>&1)" == "" ]; then
   {
     echo "${PREFIX}${NAME}=${REVISION}"
-    echo "${PREFIX}${NAME}_SHORT=$(git rev-parse --short "$REVISION")"
+    echo "${PREFIX}${NAME}_SHORT=$(git rev-parse --short"${SHORT_LENGTH}" "$REVISION")"
   } >>"$GITHUB_ENV"
 elif [ "${INPUT_CONTINUE_ON_ERROR}" == "false" ]; then
   echo "::error ::Invalid revision: $REVISION from $NAME"

@@ -93,6 +93,50 @@ jobs:
           [[ -z "${{ env.WRONG_AND_MISSING_REVISION_SHORT }}" ]]
         shell: bash
 
+      # Test 7
+      - name: Shortify a git revision with specific length
+        uses: ./
+        with:
+          name: SIZED_REVISION
+          revision: 88428f56bd9d2751c47106bedfd148162dfa50b8
+          length: 10
+      - name: Validate // Shortify a git revision with specific length
+        run: |
+          [[ "${{ env.SIZED_REVISION }}" == "88428f56bd9d2751c47106bedfd148162dfa50b8" ]]
+          [[ "${{ env.SIZED_REVISION_SHORT }}" == "88428f56bd" ]]
+        shell: bash
+
+      # Test 8
+      - id: test-shortify-git-revision-with-wrong-length
+        name: Shortify a git revision with wrong length
+        uses: ./
+        with:
+          name: WRONGFULLY_SIZED_REVISION
+          revision: 88428f56bd9d2751c47106bedfd148162dfa50b8
+          length: "not_a_number"
+        continue-on-error: true
+      - name: Validate // Shortify a git revision with wrong length
+        run: |
+          [[ -z "${{ env.WRONGFULLY_SIZED_REVISION }}" ]]
+          [[ -z "${{ env.WRONGFULLY_SIZED_REVISION_SHORT }}" ]]
+          [[ "${{ steps.test-shortify-git-revision-with-wrong-length.outcome }}" == "failure" ]]
+          [[ "${{ steps.test-shortify-git-revision-with-wrong-length.conclusion }}" == "success" ]]
+        shell: bash
+
+      # Test 9
+      - name: Shortify a git revision with wrong length without failing
+        uses: ./
+        with:
+          name: WRONGFULLY_SIZED_REVISION
+          revision: 88428f56bd9d2751c47106bedfd148162dfa50b8
+          length: "not_a_number"
+          continue-on-error: true
+      - name: Validate // Shortify a git revision with wrong length without failing
+        run: |
+          [[ "${{ env.WRONGFULLY_SIZED_REVISION }}" == "88428f56bd9d2751c47106bedfd148162dfa50b8" ]]
+          [[ "${{ env.WRONGFULLY_SIZED_REVISION_SHORT }}" == "88428f5" ]]
+        shell: bash
+
   shortify-git-revision-release:
     runs-on: ubuntu-latest
     concurrency:

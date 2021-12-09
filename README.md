@@ -38,7 +38,7 @@ If a revision is a bad revision, this action will produce an error message and f
 - Shortify any revision
 
   ```yaml
-  - uses: rlespinasse/slugify-value@v1.x
+  - uses: rlespinasse/shortify-git-revision@v1.x
     with:
       name: SOME_REVISION
       revision: 88428f56bd9d2751c47106bedfd148162dfa50b8
@@ -48,6 +48,21 @@ If a revision is a bad revision, this action will produce an error message and f
 
   - `SOME_REVISION`
   - `SOME_REVISION_SHORT`
+
+- Shortify a revision with a specific length
+
+  ```yaml
+  - uses: rlespinasse/shortify-git-revision@v1.x
+    with:
+      name: SIZED_REVISION
+      revision: 88428f56bd9d2751c47106bedfd148162dfa50b8
+      length: 10
+  ```
+
+  Will make available
+
+  - `SIZED_REVISION`
+  - `SIZED_REVISION_SHORT` (with value `88428f56bd`)
 
 ## Inputs
 
@@ -71,5 +86,11 @@ The default value is `false`.
 ### `prefix`
 
 The value will be prepend to each generated variable.
+
+This input is _Optional_.
+
+### `length`
+
+the `short` sha produce will have the length defined by the input.
 
 This input is _Optional_.
