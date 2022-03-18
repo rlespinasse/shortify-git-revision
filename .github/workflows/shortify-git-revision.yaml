@@ -1,6 +1,49 @@
 name: Shortify git revision testing
 on: [push]
 jobs:
+  error-testing-on-os:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-latest, ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    concurrency:
+      group: error-testing-on-os-${{ github.ref }}
+      cancel-in-progress: true
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          path: this-action
+          ref: ${{ github.ref }}
+
+      # Test 1
+      - name: Continue on error
+        uses: ./this-action
+        with:
+          name: ROOT_COMMIT
+          revision: 88428f56bd9d2751c47106bedfd148162dfa50b8
+          continue-on-error: true
+      - name: Validate // Continue on error
+        run: |
+          [[ "${{ env.ROOT_COMMIT }}" == "" ]]
+          [[ "${{ env.ROOT_COMMIT_SHORT }}" == "" ]]
+        shell: bash
+
+      # Test 2
+      - name: Short on error
+        uses: ./this-action
+        with:
+          name: ROOT_COMMIT
+          revision: 88428f56bd9d2751c47106bedfd148162dfa50b8
+          short-on-error: true
+          length: 7
+      - name: Validate // Short on error
+        run: |
+          [[ "${{ env.ROOT_COMMIT }}" == "88428f56bd9d2751c47106bedfd148162dfa50b8" ]]
+          [[ "${{ env.ROOT_COMMIT_SHORT }}" == "88428f5" ]]
+        shell: bash
+
   shortify-git-revision-on-os:
     strategy:
       fail-fast: false
@@ -12,7 +55,7 @@ jobs:
       cancel-in-progress: true
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       # Test 1
       - name: Shortify an existing git revision
@@ -141,11 +184,13 @@ jobs:
     runs-on: ubuntu-latest
     concurrency:
       group: shortify-git-revision-release-${{ github.ref }}
-    needs: shortify-git-revision-on-os
+    needs:
+      - error-testing-on-os
+      - shortify-git-revision-on-os
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       # Release
       - name: Release this GitHub Action
-        uses: rlespinasse/release-that@v1.x
+        uses: rlespinasse/release-that@v1

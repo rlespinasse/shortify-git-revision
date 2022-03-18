@@ -12,6 +12,10 @@ inputs:
     description: "Don't fail the action if the git revision isn't valid"
     default: "false"
     required: false
+  short-on-error:
+    description: "Still short it if the git revision isn't valid"
+    default: "false"
+    required: false
   prefix:
     description: "Value to prepend to each generated variable"
     default: ""
@@ -32,5 +36,6 @@ runs:
         INPUT_NAME: ${{ inputs.name }}
         INPUT_REVISION: ${{ inputs.revision }}
         INPUT_CONTINUE_ON_ERROR: ${{ inputs.continue-on-error }}
+        INPUT_SHORT_ON_ERROR: ${{ inputs.short-on-error }}
         INPUT_PREFIX: ${{ inputs.prefix }}
         INPUT_LENGTH: ${{ inputs.length }}
