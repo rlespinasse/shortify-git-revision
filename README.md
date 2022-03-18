@@ -4,7 +4,7 @@
 
 Produce short revision environment variable based on the input one.
 
-If a revision is a bad revision, this action will produce an error message and fail depending on `continue-on-error` input value.
+If a revision is a bad revision, this action will produce an error message and fail depending on `continue-on-error` input (This behavior can be override with `short-on-error` input).
 `<NAME>`, and `<NAME>_SHORT` environment variable will only be available if the revision is not empty and valid.
 
 ## Usage
@@ -12,7 +12,8 @@ If a revision is a bad revision, this action will produce an error message and f
 - Shortify an environment variable
 
   ```yaml
-  - uses: rlespinasse/shortify-git-revision@v1.x
+  - uses: actions/checkout@v3
+  - uses: rlespinasse/shortify-git-revision@v1
     with:
       name: GITHUB_SHA
   ```
@@ -24,7 +25,8 @@ If a revision is a bad revision, this action will produce an error message and f
 - Shortify an environment variable with prefix
 
   ```yaml
-  - uses: rlespinasse/shortify-git-revision@v1.x
+  - uses: actions/checkout@v3
+  - uses: rlespinasse/shortify-git-revision@v1
     with:
       name: GITHUB_SHA
       prefix: CI_
@@ -38,7 +40,8 @@ If a revision is a bad revision, this action will produce an error message and f
 - Shortify any revision
 
   ```yaml
-  - uses: rlespinasse/shortify-git-revision@v1.x
+  - uses: actions/checkout@v3
+  - uses: rlespinasse/shortify-git-revision@v1
     with:
       name: SOME_REVISION
       revision: 88428f56bd9d2751c47106bedfd148162dfa50b8
@@ -52,7 +55,8 @@ If a revision is a bad revision, this action will produce an error message and f
 - Shortify a revision with a specific length
 
   ```yaml
-  - uses: rlespinasse/shortify-git-revision@v1.x
+  - uses: actions/checkout@v3
+  - uses: rlespinasse/shortify-git-revision@v1
     with:
       name: SIZED_REVISION
       revision: 88428f56bd9d2751c47106bedfd148162dfa50b8
@@ -82,6 +86,15 @@ This input is _Optional_.
 If the input is set to `true`, this action will not fail on a bad revision
 
 The default value is `false`.
+
+### `short-on-error`
+
+If the input is set to `true`, this action will short a bad revision
+
+The default value is `false`.
+
+> If this input is set to `true`, the input `continue-on-error` input will be ignored.
+> If this input is set to `true`, the input `length` input is mandatory.
 
 ### `prefix`
 
