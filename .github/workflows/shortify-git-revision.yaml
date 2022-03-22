@@ -1,5 +1,9 @@
 name: Shortify Git Revision
-on: [push]
+on:
+  push:
+    branches:
+      - v1.x
+  pull_request:
 jobs:
   os-testing:
     strategy:
