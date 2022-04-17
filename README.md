@@ -68,6 +68,19 @@ If a revision is a bad revision, this action will produce an error message and f
   - `SIZED_REVISION`
   - `SIZED_REVISION_SHORT` (with value `88428f56bd`)
 
+- Shortify without publishing the environment variables
+
+  ```yaml
+  - uses: actions/checkout@v3
+  - uses: rlespinasse/shortify-git-revision@v1
+    with:
+      name: GITHUB_SHA
+  ```
+
+  Will **not** make available
+
+  - `GITHUB_SHA_SHORT`
+
 ## Inputs
 
 ### `name`
@@ -107,3 +120,10 @@ This input is _Optional_.
 the `short` sha produce will have the length defined by the input.
 
 This input is _Optional_.
+
+## Outputs
+
+| Output   | Description                 |
+| -------- | --------------------------- |
+| revision | The revision to be shortify |
+| short    | Revision Short              |
