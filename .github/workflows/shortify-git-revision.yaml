@@ -17,6 +17,7 @@ jobs:
 
       # Test 1
       - name: Shortify an existing git revision
+        id: shortify-an-existing-git-revision
         uses: ./
         with:
           name: ROOT_COMMIT
@@ -25,6 +26,8 @@ jobs:
         run: |
           [[ "${{ env.ROOT_COMMIT }}" == "88428f56bd9d2751c47106bedfd148162dfa50b8" ]]
           [[ "${{ env.ROOT_COMMIT_SHORT }}" == "88428f5" ]]
+          [[ "${{ env.ROOT_COMMIT }}" == "${{ steps.shortify-an-existing-git-revision.outputs.revision }}" ]]
+          [[ "${{ env.ROOT_COMMIT_SHORT }}" == "${{ steps.shortify-an-existing-git-revision.outputs.short }}" ]]
         shell: bash
 
       # Test 2
@@ -138,6 +141,22 @@ jobs:
           [[ "${{ env.WRONGFULLY_SIZED_REVISION_SHORT }}" == "88428f5" ]]
         shell: bash
 
+      # Test 10
+      - name: Shortify an existing git revision without env publication
+        id: shortify-an-existing-git-revision-without-env-publication
+        uses: ./
+        with:
+          name: SHORT_WITHOUT_ENV_PUBLICATION
+          revision: 88428f56bd9d2751c47106bedfd148162dfa50b8
+          publish-env: false
+      - name: Validate // Shortify an existing git revision without env publication
+        run: |
+          [[ -z "${{ env.SHORT_WITHOUT_ENV_PUBLICATION }}" ]]
+          [[ -z "${{ env.SHORT_WITHOUT_ENV_PUBLICATION }}" ]]
+          [[ "${{ steps.shortify-an-existing-git-revision-without-env-publication.outputs.revision }}" == "88428f56bd9d2751c47106bedfd148162dfa50b8" ]]
+          [[ "${{ steps.shortify-an-existing-git-revision-without-env-publication.outputs.short }}" == "88428f5" ]]
+        shell: bash
+
   error-os-testing:
     strategy:
       fail-fast: false
@@ -166,6 +185,7 @@ jobs:
 
       # Test 2
       - name: Short on error
+        id: short-on-error
         uses: ./this-action
         with:
           name: ROOT_COMMIT
@@ -176,6 +196,8 @@ jobs:
         run: |
           [[ "${{ env.ROOT_COMMIT }}" == "88428f56bd9d2751c47106bedfd148162dfa50b8" ]]
           [[ "${{ env.ROOT_COMMIT_SHORT }}" == "88428f5" ]]
+          [[ "${{ env.ROOT_COMMIT }}" == "${{ steps.short-on-error.outputs.revision }}" ]]
+          [[ "${{ env.ROOT_COMMIT_SHORT }}" == "${{ steps.short-on-error.outputs.short }}" ]]
         shell: bash
 
   release:

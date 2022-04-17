@@ -1,6 +1,9 @@
 name: "Shortify Git Revision"
 description: "Github Action to shortify a git revision"
 author: "Romain Lespinasse"
+branding:
+  icon: "crop"
+  color: "gray-dark"
 inputs:
   name:
     description: "Environment variable that will hold the value and serve as prefix to shortify value"
@@ -24,13 +27,22 @@ inputs:
     description: "Value to configure the length of the shorted sha"
     default: ""
     required: false
-branding:
-  icon: "crop"
-  color: "gray-dark"
+  publish-env:
+    description: "Publish short as environment variable"
+    default: "true"
+    required: false
+outputs:
+  revision:
+    description: "The revision to be shortify"
+    value: ${{ steps.shortify.outputs.revision }}
+  short:
+    description: "Revision Short"
+    value: ${{ steps.shortify.outputs.short }}
 runs:
   using: "composite"
   steps:
-    - run: $GITHUB_ACTION_PATH/shortify.sh
+    - id: shortify
+      run: $GITHUB_ACTION_PATH/shortify.sh
       shell: bash
       env:
         INPUT_NAME: ${{ inputs.name }}
@@ -39,3 +51,4 @@ runs:
         INPUT_SHORT_ON_ERROR: ${{ inputs.short-on-error }}
         INPUT_PREFIX: ${{ inputs.prefix }}
         INPUT_LENGTH: ${{ inputs.length }}
+        INPUT_PUBLISH_ENV: ${{ inputs.publish-env }}

@@ -27,22 +27,31 @@ if [ -z "${REVISION}" ]; then
   exit 0
 fi
 
+SHORT_PUBLICATION=false
 if [ "$(git cat-file -e "${REVISION}" 2>&1)" == "" ]; then
-  {
-    echo "${PREFIX}${NAME}=${REVISION}"
-    echo "${PREFIX}${NAME}_SHORT=$(git rev-parse --short"${SHORT_LENGTH}" "${REVISION}")"
-  } >>"$GITHUB_ENV"
+  SHORT_VALUE=$(git rev-parse --short"${SHORT_LENGTH}" "${REVISION}")
+  SHORT_PUBLICATION="true"
 elif [ "${INPUT_SHORT_ON_ERROR}" == "true" ]; then
   if [ -n "${INPUT_LENGTH}" ]; then
-    {
-      echo "${PREFIX}${NAME}=${REVISION}"
-      echo "${PREFIX}${NAME}_SHORT=$(cut -c1-"${INPUT_LENGTH}" <<<"${REVISION}")"
-    } >>"$GITHUB_ENV"
+    SHORT_VALUE=$(cut -c1-"${INPUT_LENGTH}" <<<"${REVISION}")
+    SHORT_PUBLICATION="true"
   else
-    echo "::error ::The input 'lenght' is mandatory with 'short-on-error' set to 'true'"
+    echo "::error ::The input 'length' is mandatory with 'short-on-error' set to 'true'"
     exit 1
   fi
 elif [ "${INPUT_CONTINUE_ON_ERROR}" == "false" ]; then
   echo "::error ::Invalid revision: ${REVISION} from ${NAME}"
   exit 1
+fi
+
+if [ "${SHORT_PUBLICATION}" == "true" ]; then
+  echo "::set-output name=revision::${REVISION}"
+  echo "::set-output name=short::${SHORT_VALUE}"
+
+  if [ "${INPUT_PUBLISH_ENV}" == "true" ]; then
+    {
+      echo "${PREFIX}${NAME}=${REVISION}"
+      echo "${PREFIX}${NAME}_SHORT=${SHORT_VALUE}"
+    } >>"$GITHUB_ENV"
+  fi
 fi
