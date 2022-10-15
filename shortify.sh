@@ -45,8 +45,8 @@ elif [ "${INPUT_CONTINUE_ON_ERROR}" == "false" ]; then
 fi
 
 if [ "${SHORT_PUBLICATION}" == "true" ]; then
-  echo "::set-output name=revision::${REVISION}"
-  echo "::set-output name=short::${SHORT_VALUE}"
+  echo "revision=${REVISION}" >> "$GITHUB_OUTPUT"
+  echo "short=${SHORT_VALUE}" >> "$GITHUB_OUTPUT"
 
   if [ "${INPUT_PUBLISH_ENV}" == "true" ]; then
     {
