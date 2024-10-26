@@ -1,9 +1,11 @@
+---
 name: Shortify Git Revision
 on:
   push:
     branches:
       - v1.x
   pull_request:
+permissions: read-all
 jobs:
   os-testing:
     strategy:
@@ -200,19 +202,25 @@ jobs:
           [[ "${{ env.ROOT_COMMIT_SHORT }}" == "${{ steps.short-on-error.outputs.short }}" ]]
         shell: bash
 
+
   release:
     runs-on: ubuntu-latest
-    concurrency:
-      group: release-${{ github.ref }}
     needs:
       - os-testing
       - error-os-testing
+    permissions:
+      contents: write
+      issues: write
+      id-token: write
+      packages: write
+    concurrency:
+      group: release-${{ github.ref }}
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
 
-      # Release
-      - name: Release this GitHub Action
-        uses: rlespinasse/release-that@v1
+      - name: Release That
+        uses: ./
         with:
           github-token: ${{ secrets.GH_TOKEN }}
