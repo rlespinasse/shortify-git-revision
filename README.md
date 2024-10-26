@@ -1,11 +1,22 @@
 # Shortify git revision
 
-> Github Action to shortify a git revision
+> [!NOTE]
+> A GitHub Action that generates shortened Git revision identifiers from full-length commit hashes and exposes them as environment variables.
 
-Produce short revision environment variable based on the input one.
+## Features
 
-If a revision is a bad revision, this action will produce an error message and fail depending on `continue-on-error` input (This behavior can be override with `short-on-error` input).
-`<NAME>`, and `<NAME>_SHORT` environment variable will only be available if the revision is not empty and valid.
+- Converts full Git revisions into their shortened form
+- Validates revision format and handles invalid inputs
+- Provides both full and shortened revisions as environment variables
+- Configurable error handling for invalid revisions
+
+## Behavior
+
+- Creates `<NAME>` and `<NAME>_SHORT` environment variables for valid revisions
+- Environment variables are only set when the input revision is non-empty and valid
+- Handles invalid revisions based on configuration:
+  - Fails by default (controlled by `continue-on-error` input)
+  - Can be customized using `short-on-error` input to override default behavior
 
 ## Usage
 
@@ -85,8 +96,9 @@ If a revision is a bad revision, this action will produce an error message and f
 
 ### `name`
 
-If used with `revision` input, it's the name of the environment variable containing the revision to shortify.
-Otherwise, the `name` input will be used (in upper case) to define a environment variable containing the `revision` input value.
+When providing a `revision` through the revision input, the action will use this environment variable name to store the shortened hash.
+
+If no environment variable is specified, the action automatically creates one using the `name` input (converted to uppercase) to store the provided `revision` value.
 
 ### `revision`
 
