@@ -118,8 +118,10 @@ If the input is set to `true`, this action will short a bad revision
 
 The default value is `false`.
 
-> If this input is set to `true`, the input `continue-on-error` input will be ignored.
-> If this input is set to `true`, the input `length` input is mandatory.
+> [!WARNING]
+>
+> - If this input is set to `true`, the input `continue-on-error` input will be ignored.
+> - If this input is set to `true`, the input `length` input is mandatory.
 
 ### `prefix`
 
