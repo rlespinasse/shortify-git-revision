@@ -221,6 +221,6 @@ jobs:
           persist-credentials: false
 
       - name: Release That
-        uses: ./
+        uses: rlespinasse/release-that@v1
         with:
           github-token: ${{ secrets.GH_TOKEN }}
