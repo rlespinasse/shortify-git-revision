@@ -1,6 +1,0 @@
-{
-  "threshold": 1,
-  "reporters": ["json", "html", "markdown"],
-  "ignore": ["node_modules/**", "dist/**", "build/**"]
-}
-
