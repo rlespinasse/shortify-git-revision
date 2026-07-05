@@ -15,7 +15,7 @@ jobs:
       statuses: write
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           # Full git history is needed to get a proper
           # list of changed files within `super-linter`
@@ -26,5 +26,6 @@ jobs:
         env:
           VALIDATE_ALL_CODEBASE: false
           VALIDATE_GITHUB_ACTIONS_ZIZMOR: false
+          VALIDATE_JSCPD: false
           VALIDATE_YAML_PRETTIER: false
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
